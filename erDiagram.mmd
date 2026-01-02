@@ -1,0 +1,162 @@
+erDiagram
+    USERS ||--|| COMPANIES : "manages"
+    USERS ||--o{ DEPARTMENTS : "creates"
+    USERS ||--o{ EMPLOYEES : "manages"
+    USERS ||--o{ LEAVE_TYPES : "defines"
+    USERS ||--o{ LEAVE_POLICIES : "sets"
+    USERS ||--o{ PAY_COMPONENTS : "configures"
+    USERS ||--o{ SALARY_TEMPLATES : "creates"
+    USERS ||--o{ ADMIN_SETTINGS : "customizes"
+    USERS ||--o{ LEAVE_REQUESTS : "approves"
+
+    DEPARTMENTS ||--o{ EMPLOYEES : "contains"
+
+    EMPLOYEES ||--o{ EMPLOYEE_ACTIONS : "undergoes"
+    EMPLOYEES ||--o{ LEAVE_BALANCES : "has"
+    EMPLOYEES ||--o{ LEAVE_REQUESTS : "submits"
+    EMPLOYEES ||--o{ ATTENDANCE_RECORDS : "records"
+    EMPLOYEES ||--o{ EMPLOYEE_SALARIES : "assigned"
+    EMPLOYEES ||--o{ BONUS_RECORDS : "receives"
+
+    LEAVE_TYPES ||--o{ LEAVE_POLICIES : "governs"
+    LEAVE_TYPES ||--o{ LEAVE_BALANCES : "categorizes"
+    LEAVE_TYPES ||--o{ LEAVE_REQUESTS : "categorizes"
+
+    SALARY_TEMPLATES ||--o{ EMPLOYEE_SALARIES : "defines"
+    PAY_COMPONENTS ||--o{ BONUS_RECORDS : "defines"
+
+    USERS {
+        int user_id PK
+        string username
+        string password_hash
+        enum role
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+    COMPANIES {
+        int company_id PK
+        int admin_id FK
+        string company_name
+        text address
+        string phone
+        string email
+        string industry
+        timestamp created_at
+    }
+    DEPARTMENTS {
+        int department_id PK
+        int admin_id FK
+        string department_name
+        string department_head
+        timestamp created_at
+    }
+    EMPLOYEES {
+        int employee_id PK
+        int admin_id FK
+        int department_id FK
+        string first_name
+        string last_name
+        string email
+        string phone
+        date hire_date
+        string position
+        string salary_grade
+        boolean is_active
+        timestamp created_at
+    }
+    EMPLOYEE_ACTIONS {
+        int action_id PK
+        int employee_id FK
+        enum action_type
+        date action_date
+        text description
+        timestamp created_at
+    }
+    LEAVE_TYPES {
+        int leave_type_id PK
+        int admin_id FK
+        string leave_name
+        boolean is_paid
+        int max_days_per_year
+        timestamp created_at
+    }
+    LEAVE_POLICIES {
+        int policy_id PK
+        int admin_id FK
+        int leave_type_id FK
+        decimal accrual_rate
+        int max_carryover
+        timestamp created_at
+    }
+    LEAVE_BALANCES {
+        int balance_id PK
+        int employee_id FK
+        int leave_type_id FK
+        decimal balance_days
+        decimal used_days
+        year year
+        timestamp updated_at
+    }
+    LEAVE_REQUESTS {
+        int request_id PK
+        int employee_id FK
+        int leave_type_id FK
+        date start_date
+        date end_date
+        decimal days_requested
+        enum status
+        int approved_by FK
+        timestamp created_at
+    }
+    ATTENDANCE_RECORDS {
+        int attendance_id PK
+        int employee_id FK
+        date attendance_date
+        time clock_in
+        time clock_out
+        enum status
+        decimal hours_worked
+        timestamp created_at
+    }
+    PAY_COMPONENTS {
+        int component_id PK
+        int admin_id FK
+        string component_name
+        enum component_type
+        boolean is_taxable
+        boolean is_fixed
+        timestamp created_at
+    }
+    SALARY_TEMPLATES {
+        int template_id PK
+        int admin_id FK
+        string template_name
+        string grade_level
+        decimal base_salary
+        timestamp created_at
+    }
+    EMPLOYEE_SALARIES {
+        int salary_id PK
+        int employee_id FK
+        int template_id FK
+        date effective_date
+        boolean is_active
+        timestamp created_at
+    }
+    BONUS_RECORDS {
+        int bonus_id PK
+        int employee_id FK
+        int component_id FK
+        decimal amount
+        date bonus_date
+        text description
+        timestamp created_at
+    }
+    ADMIN_SETTINGS {
+        int setting_id PK
+        int admin_id FK
+        string setting_key
+        text setting_value
+        timestamp created_at
+    }

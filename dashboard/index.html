@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS Dashboard | Multi-Tenant System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-users-gear"></i>
+                <h2>HRMS Pro</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" onclick="switchTab('overview')"><i class="fa-solid fa-chart-line"></i> Overview</li>
+                    <li onclick="switchTab('employees')"><i class="fa-solid fa-users"></i> Employees</li>
+                    <li onclick="switchTab('leave')"><i class="fa-solid fa-calendar-check"></i> Leave Mgmt</li>
+                    <li onclick="switchTab('attendance')"><i class="fa-solid fa-clock"></i> Attendance</li>
+                    <li onclick="switchTab('payroll')"><i class="fa-solid fa-money-bill-wave"></i> Payroll</li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar">AD</div>
+                <div class="info">
+                    <h4>Admin User</h4>
+                    <p>Tech Solutions Inc.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <select id="companySelector" class="company-selector">
+                        <option value="" disabled selected>Select Company</option>
+                    </select>
+                </div>
+                <div class="header-right">
+                    <button id="refreshBtn" class="refresh-btn" onclick="refreshDashboard()">
+                        <i class="fa-solid fa-rotate"></i> Refresh
+                    </button>
+                    <div class="date-display" id="currentDate"></div>
+                </div>
+            </header>
+
+            <!-- Overview Section -->
+            <div id="overview-section" class="dashboard-section active">
+                <!-- KPI Cards -->
+                <div class="kpi-container">
+                    <div class="kpi-card">
+                        <div class="icon-box blue"><i class="fa-solid fa-users"></i></div>
+                        <div class="kpi-info">
+                            <h3>Total Employees</h3>
+                            <p id="kpi-total-employees">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="icon-box green"><i class="fa-solid fa-user-check"></i></div>
+                        <div class="kpi-info">
+                            <h3>Active Now</h3>
+                            <p id="kpi-active-employees">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="icon-box orange"><i class="fa-solid fa-clock"></i></div>
+                        <div class="kpi-info">
+                            <h3>Pending Leaves</h3>
+                            <p id="kpi-pending-leaves">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="icon-box purple"><i class="fa-solid fa-money-bill"></i></div>
+                        <div class="kpi-info">
+                            <h3>Payroll Cost</h3>
+                            <p id="kpi-payroll-cost">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Department Distribution</h3>
+                        <canvas id="deptDistributionChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Attendance Trends (6 Months)</h3>
+                        <canvas id="attendanceTrendChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Leave Request Status</h3>
+                        <canvas id="leaveStatusChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Position Distribution</h3>
+                        <canvas id="positionChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Average Hours by Department</h3>
+                        <canvas id="overviewAvgHoursChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Department Salary Comparison</h3>
+                        <canvas id="overviewDeptSalaryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bottom Grid -->
+                <div class="bottom-grid">
+                    <!-- Recent Activities -->
+                    <div class="activity-card">
+                        <h3>Recent Activities</h3>
+                        <div class="activity-list" id="recent-activities">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- New Hires Table -->
+                    <div class="table-card">
+                        <h3>New Hires</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="new-hires-table">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employees Section (Paginated Table) -->
+            <div id="employees-section" class="dashboard-section">
+                <!-- Employee Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Position Distribution</h3>
+                        <canvas id="employeesPositionChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Salary Distribution Range</h3>
+                        <canvas id="employeesSalaryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="table-card full-width">
+                    <div class="table-header">
+                        <h3>Employee Directory</h3>
+                        <div class="table-actions">
+                            <input type="text" placeholder="Search employees..." class="search-input">
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Position</th>
+                                <th>Hire Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employees-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                    <div class="pagination-controls">
+                        <button id="prevPage" onclick="changePage(-1)">Previous</button>
+                        <span id="pageInfo">Page 1 of 1</span>
+                        <button id="nextPage" onclick="changePage(1)">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Section -->
+            <div id="leave-section" class="dashboard-section">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Leave Balance Overview</h3>
+                        <canvas id="leaveBalanceChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Monthly Leave Usage</h3>
+                        <canvas id="monthlyLeaveChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Section -->
+            <div id="attendance-section" class="dashboard-section">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Average Hours Worked by Department</h3>
+                        <canvas id="avgHoursChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Weekly Attendance Pattern</h3>
+                        <canvas id="weeklyAttendanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payroll Section -->
+            <div id="payroll-section" class="dashboard-section">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Salary Distribution Range</h3>
+                        <canvas id="salaryRangeChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Department Salary Comparison</h3>
+                        <canvas id="deptSalaryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
