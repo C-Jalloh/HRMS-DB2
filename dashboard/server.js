@@ -315,10 +315,35 @@ app.get('/api/dept-salary-comparison', (req, res) => {
         JOIN departments d ON e.department_id = d.department_id
         LEFT JOIN employee_salaries es ON e.employee_id = es.employee_id AND es.is_active = TRUE
         LEFT JOIN salary_templates st ON es.template_id = st.template_id
-        WHERE e.admin_id = ? AND e.is_active = TRUE AND st.base_salary IS NOT NULL
+        WHERE d.admin_id = ? AND e.is_active = TRUE AND st.base_salary IS NOT NULL
         GROUP BY d.department_id, d.department_name
         HAVING avg_salary > 0
         ORDER BY avg_salary DESC`;
+    db.query(query, [adminId], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// 15. Department Summary Table
+app.get('/api/dept-summary', (req, res) => {
+    const adminId = getAdminId(req);
+    if (!adminId) return res.status(400).json({ error: 'Admin ID required' });
+
+    const query = `
+        SELECT 
+            d.department_name,
+            COUNT(e.employee_id) as total_staff,
+            ROUND(AVG(st.base_salary), 0) as avg_salary,
+            ROUND(AVG(CASE WHEN ar.status = 'present' THEN 100 ELSE 0 END), 1) as avg_attendance
+        FROM departments d
+        LEFT JOIN employees e ON d.department_id = e.department_id
+        LEFT JOIN employee_salaries es ON e.employee_id = es.employee_id AND es.is_active = TRUE
+        LEFT JOIN salary_templates st ON es.template_id = st.template_id
+        LEFT JOIN attendance_records ar ON e.employee_id = ar.employee_id
+        WHERE d.admin_id = ?
+        GROUP BY d.department_id, d.department_name
+        ORDER BY total_staff DESC`;
     db.query(query, [adminId], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);

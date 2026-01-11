@@ -2,10 +2,13 @@
 
 ## Database Systems II Project - Complete Implementation
 
-**Created:** December 6, 2025  
-**Author:** [Your Name]  
+**Date:** January 11, 2026  
+**Authors:** 
+- Mamadou Alieu Jallow (22316058)
+- Ousainou Sanyang (22316027)
+- Ebrima S Jallow (22213296)
 **Course:** Database Systems II  
-**Institution:** [Your Institution]
+**Institution:** University of The Gambia (UTG)
 
 ---
 
@@ -15,12 +18,12 @@ This project implements a comprehensive **Multi-Tenant Human Resources Managemen
 
 ### 🎯 Core Features
 
-- **Employee Management**: Complete CRUD operations for employee data
-- **Leave Management**: Request, approval, and tracking system
-- **Time & Attendance**: Clock in/out tracking and reporting
-- **Payroll Management**: Salary templates, bonuses, and compensation tracking
-- **Multi-Tenant Architecture**: Complete data isolation between organizations
-- **Dashboard Analytics**: Comprehensive reporting and visualization queries
+- **Multi-Tenant Architecture**: Complete data isolation between organizations using `admin_id` logic.
+- **Employee Management**: Complete CRUD operations for employee data and history.
+- **Leave Management**: Comprehensive request, approval, and balance tracking system.
+- **Time & Attendance**: Real-time clock in/out tracking with status monitoring (Late, Absent, Half-day).
+- **Payroll Management**: Advanced salary templates, bonus components, and compensation audit trails.
+- **Dashboard Analytics**: Real-time visualization of HR KPIs via a Full-Stack Web Dashboard.
 
 ### 🏗️ System Architecture
 
@@ -35,18 +38,21 @@ This project implements a comprehensive **Multi-Tenant Human Resources Managemen
 ## 📁 Project Structure
 
 ```
-database_schemas/
-├── hrms_schema.sql              # Complete database schema with constraints
-├── hrms_sample_data.sql         # Sample data (10+ records per table)
-├── hrms_crud_operations.sql     # Full CRUD operations for all tables
-├── hrms_required_queries.sql    # 15 advanced SQL queries
-├── hrms_transactions.sql        # Transaction demonstrations
-├── hrms_dashboard_data.sql      # Dashboard visualization queries
-├── hrms_validation_tests.sql    # Comprehensive testing script
-└── README.md                    # This documentation
-
-HRMS_Implementation_Plan.md      # Project planning document
-hrms_erd_design.md              # Entity-Relationship Diagram documentation
+.
+├── HRMS_Master_Submission.sql   # Consolidated SQL script (Schema, Data, Queries, Transactions)
+├── HRMS_Final_Report.md        # Formatted academic report with screenshots
+├── README.md                   # Project documentation and setup guide
+├── dashboard/                  # Full-stack dashboard application
+│   ├── server.js               # Node.js/Express backend API
+│   ├── index.html              # Frontend UI with Chart.js
+│   ├── script.js               # Dynamic charting logic
+│   └── style.css               # Dashboard styling
+├── database_schemas/           # Individual SQL modules (Original components)
+│   ├── hrms_schema.sql         # 3NF Normalized schema
+│   ├── hrms_sample_data.sql    # 10 records per table minimum
+│   ├── hrms_transactions.sql   # COMMIT/ROLLBACK logic
+│   └── hrms_validation_tests.sql
+└── documentation/              # Supporting documents and diagrams
 ```
 
 ---
@@ -95,20 +101,14 @@ hrms_erd_design.md              # Entity-Relationship Diagram documentation
    USE hrms_db;
    ```
 
-2. **Execute Schema**
+2. **Execute Master Script**
+   This script contains the schema, sample data, queries, and transaction demonstrations.
    ```bash
-   mysql -u root -p hrms_db < database_schemas/hrms_schema.sql
+   mysql -u root -p hrms_db < HRMS_Master_Submission.sql
    ```
 
-3. **Load Sample Data**
-   ```bash
-   mysql -u root -p hrms_db < database_schemas/hrms_sample_data.sql
-   ```
-
-4. **Run Validation Tests**
-   ```bash
-   mysql -u root -p hrms_db < database_schemas/hrms_validation_tests.sql
-   ```
+3. **Run Individual Components (Optional)**
+   You can also run files from the `database_schemas/` directory if needed.
 
 ### Alternative: Using MySQL Workbench
 
@@ -193,18 +193,26 @@ COMMIT; -- Or ROLLBACK on error
 
 ### 🖥️ Web-Based Dashboard
 
-A fully functional web-based dashboard is included in the `dashboard/` directory. It uses HTML, CSS, and JavaScript with Chart.js to visualize the HRMS data.
+A fully functional web-based dashboard is included in the `dashboard/` directory. It uses a Node.js/Express backend to query the live MySQL database and a Chart.js frontend for visualization.
 
 **Features:**
-- **Interactive Charts**: Visualizations for employee distribution, attendance trends, leave status, and more.
-- **KPI Cards**: Real-time key performance indicators.
-- **Tab Navigation**: Switch between Overview, Employees, Leave, Attendance, and Payroll views.
-- **Responsive Design**: Works on desktop and mobile devices.
+- **Interactive Charts**: Real-time visualizations for employee distribution, attendance trends, and payroll.
+- **KPI Cards**: Live counts of employees, active leave requests, and attendance stats.
+- **Tenant Switching**: Dashboard updates based on the logged-in administrator context.
+- **Responsive Design**: Clean UI with CSS Grid and Flexbox.
 
 **How to Run:**
 1. Navigate to the `dashboard/` directory.
-2. Open `index.html` in any modern web browser.
-3. The dashboard will load with mock data (simulating backend API response).
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Update `db_config.php` (if using PHP) or the connection string in `server.js` with your MySQL credentials.
+4. Start the server:
+   ```bash
+   node server.js
+   ```
+5. Open `http://localhost:3000` in your browser.
 
 ### Available Dashboards (SQL Queries)
 

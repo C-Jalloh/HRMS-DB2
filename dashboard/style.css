@@ -387,6 +387,33 @@ header {
     border-color: #4361ee;
 }
 
+/* --- Attendance Progress --- */
+.attendance-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.attendance-progress .value {
+    font-size: 0.85rem;
+    min-width: 40px;
+    color: #64748b;
+}
+
+.attendance-progress .progress-bar {
+    flex: 1;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.attendance-progress .fill {
+    height: 100%;
+    background-color: #22c55e;
+    border-radius: 4px;
+}
+
 /* --- Pagination Controls --- */
 .pagination-controls {
     display: flex;

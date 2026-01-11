@@ -52,6 +52,7 @@ function initDashboardData() {
     loadKPIs();
     loadRecentActivities();
     loadNewHires();
+    loadDeptSummary();
     initCharts();
     loadEmployees(1); // Load first page of employees
 }
@@ -129,6 +130,34 @@ async function loadNewHires() {
         });
     } catch (error) {
         console.error('Error loading new hires:', error);
+    }
+}
+
+async function loadDeptSummary() {
+    try {
+        const response = await fetch(`${API_URL}/dept-summary?admin_id=${currentAdminId}`);
+        const sectors = await response.json();
+
+        const tbody = document.getElementById('dept-summary-table');
+        tbody.innerHTML = '';
+
+        sectors.forEach(row_data => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="font-weight: bold;">${row_data.department_name}</td>
+                <td>${row_data.total_staff}</td>
+                <td>$${(row_data.avg_salary || 0).toLocaleString()}</td>
+                <td>
+                    <div class="attendance-progress">
+                        <span class="value">${row_data.avg_attendance || 0}%</span>
+                        <div class="progress-bar"><div class="fill" style="width: ${row_data.avg_attendance || 0}%"></div></div>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading department summary:', error);
     }
 }
 
