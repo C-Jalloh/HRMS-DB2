@@ -1,0 +1,16 @@
+# Memory bank directory
+memory-bank/
+
+# GitHub workflows/actions
+.github/
+
+# Project planning documents
+HRMS_Implementation_Plan.md
+HRMS_Improvement_Plan.md
+Project_Overview.md
+
+# Master submission file
+HRMS_Master_Submission.sql
+
+# SVG diagrams
+employee_management.svg

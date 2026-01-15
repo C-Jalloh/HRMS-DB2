@@ -287,6 +287,16 @@ CREATE TABLE admin_settings (
 -- Indexes for Performance Optimization
 -- =====================================================
 
+-- -----------------------------------------------------
+-- Index explanation and impact:
+-- 1. idx_employees_admin_hire: Optimizes tenant-specific employee filtering. 
+--    Reduces search space for HR reports filtered by organization.
+-- 2. idx_attendance_employee_date: Dramatically speeds up monthly attendance 
+--    lookups by employee ID. Essential for payroll and monthly summaries.
+-- 3. idx_leave_balances_employee_year: Ensures fast retrieval of leave stats 
+--    for dashboard and entitlement checks.
+-- -----------------------------------------------------
+
 -- Composite index for tenant-specific employee queries
 CREATE INDEX idx_employees_admin_hire ON employees(admin_id, hire_date);
 

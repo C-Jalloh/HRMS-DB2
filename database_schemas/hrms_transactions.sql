@@ -312,19 +312,19 @@ SELECT 'Transaction with savepoint completed successfully!' AS result;
 -- Deadlock Prevention Example
 -- =====================================================
 
-Transaction A (run this first in one session)
-START TRANSACTION;
-UPDATE employees SET position = 'Updated Position A' WHERE employee_id = 1;
-DO SLEEP(5);  -- Wait for Transaction B to lock the other resource
-UPDATE departments SET department_head = 'Updated Head A' WHERE department_id = 1;
-COMMIT;
+-- Transaction A (run this first in one session)
+-- START TRANSACTION;
+-- UPDATE employees SET position = 'Updated Position A' WHERE employee_id = 1;
+-- DO SLEEP(5);  -- Wait for Transaction B to lock the other resource
+-- UPDATE departments SET department_head = 'Updated Head A' WHERE department_id = 1;
+-- COMMIT;
 
-Transaction B (run this simultaneously in another session)
-START TRANSACTION;
-UPDATE departments SET department_head = 'Updated Head B' WHERE department_id = 1;
-DO SLEEP(5);  -- Wait for Transaction A
-UPDATE employees SET position = 'Updated Position B' WHERE employee_id = 1;
-COMMIT;
+-- Transaction B (run this simultaneously in another session)
+-- START TRANSACTION;
+-- UPDATE departments SET department_head = 'Updated Head B' WHERE department_id = 1;
+-- DO SLEEP(5);  -- Wait for Transaction A
+-- UPDATE employees SET position = 'Updated Position B' WHERE employee_id = 1;
+-- COMMIT;
 
 -- To prevent deadlocks, always access resources in the same order:
 -- 1. departments table first, then employees table
